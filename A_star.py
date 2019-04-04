@@ -89,20 +89,27 @@ class Search(object):
         return None
 
 
-def generate_graph(x_range, y_range, num_obstacle):
+def generate_graph(x_range, y_range):
     # Generate world graph with obstacles 
     world_state = [[0] * y_range for i in range(x_range)]
-    num = np.random.randint(num_obstacle) + 1
+    for i in range(y_range):
+    	world_state[0][i] = 1
 
-    for k in range(num): 
-        p1_x = np.random.randint(x_range)
-        p1_y = np.random.randint(y_range)
-        p2_x = p1_x + np.random.randint(x_range // 5 + 1)
-        p2_y = p1_y + np.random.randint(y_range // 5 + 1)
-        for i in range(p1_x, min(p2_x + 1, x_range)):
-            for j in range(p1_y, min(p2_y + 1, y_range)):
-                world_state[i][j] = 1
-                
+    for i in range(x_range):
+    	world_state[i][0] = 1
+
+    for i in range(y_range):
+    	world_state[-1][i] = 1
+
+    for i in range(x_range):
+    	world_state[i][-1] = 1
+
+    for i in range(y_range // 3 * 2):
+    	world_state[x_range // 3][i] = 1
+
+    for i in range(y_range // 3, y_range):
+    	world_state[x_range // 3 * 2][i] = 1
+     
     return world_state
 
 
@@ -154,25 +161,25 @@ def show_result(op_path, world_state, robot_pose, goal_pose):
 
     xr = len(world_state)
     yr = len(world_state[0])
-    plt.figure(figsize=(10*(xr // yr), 10))
+    plt.figure(figsize=(8*(xr // yr), 8))
     plt.plot(WX, WY, "w.", label = "World")
-    plt.plot(OX, OY, "ko", label = "Obstacle", markersize = 8)
-    plt.plot(SX, SY, "bo", label = "Robot_Pose", markersize = 12)
-    plt.plot(GX, GY, "ro", label = "Goal_Pose", markersize = 12)
+    plt.plot(OX, OY, "ko", label = "Obstacle", markersize = 5)
+    plt.plot(SX, SY, "bo", label = "Robot_Pose", markersize = 8)
+    plt.plot(GX, GY, "ro", label = "Goal_Pose", markersize = 8)
     
     if op_path:
-        plt.plot(OPX, OPY, alpha = 0.6, label = "Optimal_Path", linewidth = 3)
+        plt.plot(OPX, OPY, alpha = 0.9, label = "Optimal_Path", linewidth = 3)
     plt.legend(loc = 'upper center', bbox_to_anchor = (0.5, -0.05), fancybox = True, shadow = True, ncol = 6)
     plt.show()
     plt.close()
 
 def main():
     # Input generation for performance test
-    xr = 100
-    yr = 100
-    num_obs = 20
-    world_state = generate_graph(xr, yr, num_obs)
-    robot_pose, goal_pose = generate_robot_goal(xr, yr, world_state)
+    xr = 50
+    yr = 50
+    world_state = generate_graph(xr, yr)
+    # robot_pose, goal_pose = generate_robot_goal(xr, yr, world_state)
+    robot_pose, goal_pose = (5, 5),  (45, 45)
     search = Search(world_state, robot_pose, goal_pose)
     
     # Implement optimal planner
@@ -192,4 +199,3 @@ def main():
             
 if __name__ == '__main__':
     main()
-
