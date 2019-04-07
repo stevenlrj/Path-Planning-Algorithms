@@ -5,7 +5,7 @@ import timeit
 
 class PriorityQueue(object):
     """A priority queue achieved by min heap used to hold nodes in exploring queue, which could achieve extracking node 
-    with least priority in O(log(n)) of time complexity, where n is the number of nodes in queue.
+    with least priority in O(log(n)) of time complexity, where n is the number of nodes in queue
     """
     def __init__(self):
         self.queue = []
@@ -24,16 +24,16 @@ class Search(object):
     """
     
     def __init__(self, world_state, robot_pose, goal_pose):
-    	# Initializa variables and data container
+        # Initialization 
         self.world_state = world_state
         self.robot_pose = robot_pose
         self.goal_pose = goal_pose
         self.x_range = len(world_state)
         self.y_range = len(world_state[0])
         
-        self.frontier = PriorityQueue()   	# Hold and extract node with min priority
-        self.cost = {}              		# Hold and record nodes and their distances from start pose
-        self.parent = {}            		# Hold nodes that has already been visited and their parent nodes
+        self.frontier = PriorityQueue()   	# Hold and extract node in exploring queue
+        self.cost = {}              		# Record nodes and their distances from start pose
+        self.parent = {}            		# Hold nodes that has already been visited and record their parent nodes
         
         self.frontier.push(robot_pose, 0)
         self.cost[robot_pose] = 0
@@ -68,7 +68,7 @@ class Search(object):
     def optimal_planner(self):
         # Optimal planner achieved by A* Algorithm
         while not self.frontier.empty():
-            # Get and visit node with least priority
+            # Get and visit nodes with least priority
             cur = self.frontier.pop()   
             
             # If reach goal pose, track back to get path 
@@ -79,7 +79,7 @@ class Search(object):
             neighbors = self.find_neighbor(cur)
             for neighbor in neighbors:
             	new_cost = self.cost[cur] + 1
-                # No need to explore node that has been visited
+                # No need to explore node that has been visited or its cost doesn't need to be updated
                 if neighbor not in self.parent or new_cost < self.cost[neighbor]:
                 	self.cost[neighbor] = new_cost
                 	priority = new_cost + self.cal_heuristic(neighbor)
@@ -104,11 +104,11 @@ def generate_graph(x_range, y_range):
     for i in range(x_range):
     	world_state[i][-1] = 1
 
-    for i in range(y_range // 3 * 2):
-    	world_state[x_range // 3][i] = 1
+    for i in range(y_range // 5 * 4):
+    	world_state[x_range // 10 * 4 - 1][i] = 1
 
-    for i in range(y_range // 3, y_range):
-    	world_state[x_range // 3 * 2][i] = 1
+    for i in range(y_range // 5 , y_range):
+    	world_state[x_range // 10 * 6 - 1][i] = 1
      
     return world_state
 
@@ -179,7 +179,7 @@ def main():
     yr = 50
     world_state = generate_graph(xr, yr)
     # robot_pose, goal_pose = generate_robot_goal(xr, yr, world_state)
-    robot_pose, goal_pose = (5, 5),  (45, 45)
+    robot_pose, goal_pose = (5, 5),  (xr - 5, yr - 5)
     search = Search(world_state, robot_pose, goal_pose)
     
     # Implement optimal planner
@@ -199,3 +199,4 @@ def main():
             
 if __name__ == '__main__':
     main()
+
