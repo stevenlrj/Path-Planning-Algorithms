@@ -134,11 +134,11 @@ def generate_robot_goal(x_range, y_range, world_state):
     
 def show_result(op_path, world_state, robot_pose, goal_pose):
     # Plot to show result if we found a path
-    OPX = []   # Optimal path
+    OPX = []            # Optimal path
     OPY = []
-    WX = []  # World
+    WX = []             # World
     WY = []
-    OX = []  # Obstacle
+    OX = []             # Obstacle
     OY = []
     SX = robot_pose[0]  # Robot pose
     SY = robot_pose[1]
