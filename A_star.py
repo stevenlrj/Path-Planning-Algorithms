@@ -24,7 +24,6 @@ class Search(object):
     """
     
     def __init__(self, world_state, robot_pose, goal_pose):
-        # Initialization 
         self.world_state = world_state
         self.robot_pose = robot_pose
         self.goal_pose = goal_pose
