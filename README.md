@@ -1,4 +1,4 @@
-# Path-Planning algorithms implemented in Python
+# Path-Planning algorithms implementation in Python
 
 (1) A* : graph search algorithm to solve optimal solution for path planning problems
 
