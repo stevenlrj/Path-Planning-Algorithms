@@ -33,7 +33,7 @@ class Search(object):
         
         self.frontier = PriorityQueue()     # Exploring queue
         self.cost = {}                      # Record nodes and their costs from start pose
-        self.parent = {}                    # Record visitted nodes and their their parents
+        self.parent = {}                    # Record visitted nodes and their parents
         
         self.frontier.push(robot_pose, 0)
         self.cost[robot_pose] = 0
