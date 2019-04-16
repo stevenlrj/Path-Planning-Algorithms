@@ -14,3 +14,5 @@ If we want to keep our robot stay a specific distance from obstacle for safety c
 (2) RRT & RRT* : sampled based algorithm to solve path planning problems, RRT is guaranteed to find sub-optimal solution and RRT* is guaranteed to find optimal solution.
 
 The path found by RRT and RRT* could be like in the figure below:
+
+![03](RRT_star_01.png)
