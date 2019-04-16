@@ -14,7 +14,7 @@ class Node():
         self.tuple = (x, y)
 
 class Search(object):
-    """Search methods for discrete motion planner
+    """Search methods for path planner
     """
     def __init__(self, world_state, robot_pose, goal_pose, expand_length, iteration, obs_list, robot_size):
         self.world_state = world_state
@@ -266,6 +266,7 @@ def show_result(op_path, so_path, world_state, robot_pose, goal_pose, obs_list):
     plt.close()
 
 def main():
+    # Parameter initialization
     x_range = 50
     y_range = 50
     robot_size = 3
