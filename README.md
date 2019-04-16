@@ -4,11 +4,11 @@
 
 The path found will be like in the figure below:
 
-![01](A_star_01.jpg)
+![02](A_star_02.jpg)
 
 If we want to keep our robot stay a specific distance from obstacle for safety consideration, the path found could be like in the figure below:
 
-![02](A_star_02.jpg)
+![01](A_star_01.jpg)
 
 
 (2) RRT & RRT* : sampled based algorithm to solve path planning problems, RRT is guaranteed to find sub-optimal solution and RRT* is guaranteed to find optimal solution.
