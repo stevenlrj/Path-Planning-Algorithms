@@ -16,3 +16,5 @@ If we want to keep our robot stay a specific distance from obstacle for safety c
 The path found by RRT and RRT* could be like in the figure below:
 
 ![03](RRT_star_01.png)
+
+![04](RRT_star_02.png)
