@@ -38,6 +38,31 @@ class Search(object):
         self.frontier.push(robot_pose, 0)
         self.cost[robot_pose] = 0
         self.parent[robot_pose] = None
+        
+    def A_star(self):
+        # Optimal planner achieved by A* Algorithm
+        while not self.frontier.empty():
+            # Extract and visit nodes with least priority
+            cur = self.frontier.pop()   
+            
+            # If we reach goal pose, track back to get path 
+            if cur == self.goal_pose:            
+                return self.generate_path(cur)
+            
+            # Get possible next step movements of current node
+            motions = self.get_robot_motion(cur)
+            for motion in motions:
+                node = motion[0]
+                cost = motion[1]
+                new_cost = self.cost[cur] + cost
+                # No need to explore node that has been visited or its cost doesn't need to be updated
+                if node not in self.parent or new_cost < self.cost[node]:
+                    self.cost[node] = new_cost
+                    priority = new_cost + self.cal_heuristic(node)
+                    self.frontier.push(node, priority)
+                    self.parent[node] = cur
+                    
+        return None
 
     def cal_heuristic(self, node):
         # Calculate distance between node and goal_pose as heuristic
@@ -82,31 +107,7 @@ class Search(object):
         path.append(self.robot_pose)
         return path[::-1]
         
-    def A_star(self):
-        # Optimal planner achieved by A* Algorithm
-        while not self.frontier.empty():
-            # Extract and visit nodes with least priority
-            cur = self.frontier.pop()   
-            
-            # If we reach goal pose, track back to get path 
-            if cur == self.goal_pose:            
-                return self.generate_path(cur)
-            
-            # Get possible next step movements of current node
-            motions = self.get_robot_motion(cur)
-            for motion in motions:
-                node = motion[0]
-                cost = motion[1]
-                new_cost = self.cost[cur] + cost
-                # No need to explore node that has been visited or its cost doesn't need to be updated
-                if node not in self.parent or new_cost < self.cost[node]:
-                    self.cost[node] = new_cost
-                    priority = new_cost + self.cal_heuristic(node)
-                    self.frontier.push(node, priority)
-                    self.parent[node] = cur
-                    
-        return None
-
+        
 def generate_obstacle(xr, yr):
     # Obstacle generation
     obs_list = [[(0, xr), (0, 1)], 
