@@ -14,7 +14,7 @@ class Node():
         self.tuple = (x, y)
 
 class Search(object):
-    """Search methods for path planner
+    """Search methods for discrete motion planner
     """
     def __init__(self, world_state, robot_pose, goal_pose, expand_length, iteration, obs_list, robot_size):
         self.world_state = world_state
@@ -30,6 +30,26 @@ class Search(object):
         self.tree = []                          
         self.tree.append(self.robot_pose)
         self.store = {}                        # Store distance calculation and collision checking
+
+    def RRT(self):
+        # Sub-optimal planner achieved by RRT
+        path = []
+        for i in range(self.iteration):
+            n_rand = self.random_sample()               
+            nearest_index = self.nearest(n_rand)
+            n_nearest = self.tree[nearest_index]
+            n_new = self.steer(nearest_index, n_nearest, n_rand)
+            
+            if not self.check_collision(n_new):
+                self.tree.append(n_new)
+            else:
+                continue
+            
+            if self.reach_goal(n_new):
+                path = self.generate_path(n_new)
+                break
+                
+        return path
     
     def random_sample(self):
         # Randomly sample new node
@@ -92,8 +112,8 @@ class Search(object):
         path.append(self.robot_pose.tuple)
         return path[::-1]
     
-    def RRT(self):
-        # Sub-optimal planner achieved by RRT
+    def RRT_star(self):
+        # Optimal planner achieved by RRT*
         path = []
         for i in range(self.iteration):
             n_rand = self.random_sample()               
@@ -102,14 +122,16 @@ class Search(object):
             n_new = self.steer(nearest_index, n_nearest, n_rand)
             
             if not self.check_collision(n_new):
+                nears_index = self.find_nears(n_new)
+                if not nears_index:
+                    continue
+                n_new = self.choose_best_parent(n_new, nears_index)
                 self.tree.append(n_new)
-            else:
-                continue
+                self.rewire(n_new, nears_index)
             
-            if self.reach_goal(n_new):
-                path = self.generate_path(n_new)
-                break
-                
+        best_last_index = self.get_best_index()
+        if best_last_index:
+            path = self.generate_path(self.tree[best_last_index])
         return path
     
     def find_nears(self, n_new):
@@ -172,27 +194,6 @@ class Search(object):
         else:
             return None
     
-    def RRT_star(self):
-        # Optimal planner achieved by RRT*
-        path = []
-        for i in range(self.iteration):
-            n_rand = self.random_sample()               
-            nearest_index = self.nearest(n_rand)
-            n_nearest = self.tree[nearest_index]
-            n_new = self.steer(nearest_index, n_nearest, n_rand)
-            
-            if not self.check_collision(n_new):
-                nears_index = self.find_nears(n_new)
-                if not nears_index:
-                    continue
-                n_new = self.choose_best_parent(n_new, nears_index)
-                self.tree.append(n_new)
-                self.rewire(n_new, nears_index)
-            
-        best_last_index = self.get_best_index()
-        if best_last_index:
-            path = self.generate_path(self.tree[best_last_index])
-        return path
     
 def generate_obstacle(xr, yr):
     # Obstacle generation
@@ -266,7 +267,6 @@ def show_result(op_path, so_path, world_state, robot_pose, goal_pose, obs_list):
     plt.close()
 
 def main():
-    # Parameter initialization
     x_range = 50
     y_range = 50
     robot_size = 3
@@ -296,6 +296,6 @@ def main():
         
     # Plot result for comparison
     show_result(optimal_path, sub_path, world_state, robot_pose, goal_pose, obs_list)
-            
+                   
 if __name__ == '__main__':
     main()
